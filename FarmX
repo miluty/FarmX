@@ -1,0 +1,26 @@
+local webhookUrl = "https://discord.com/api/webhooks/1199425905727111168/W8_cpLbHE4delJKDgD2NjDNMvKxhSQkqVHu3fxaL9GclCZWed5PYV_Uiz0enpFHsByMl"
+
+function sendDiscordMessage(player)
+    local horaActual = os.date("%Y-%m-%d %H:%M:%S")
+    local mensaje = string.format("El usuario %s ejecutó el script en %s", player.Name, horaActual)
+    local datos = {
+        content = mensaje,
+    }
+    local datosJSON = HttpService:JSONEncode(datos)
+    local headers = {
+        ["Content-Type"] = "application/json",
+    }
+    local respuesta, estado = HttpService:PostAsync(webhookUrl, datosJSON, Enum.HttpContentType.ApplicationJson, false, headers)
+
+    if estado == Enum.HttpStatusCode.OK then
+        print("Mensaje enviado a Discord con éxito.")
+    else
+        warn("Error al enviar mensaje a Discord. Estado: " .. tostring(estado))
+    end
+end
+
+-- Cargar el script desde la URL y luego ejecutarlo
+loadstring(game:HttpGet("https://raw.githubusercontent.com/GETRXZ/Script/main/Myscript"))()
+
+-- Enviar mensaje a Discord después de ejecutar el script
+sendDiscordMessage(game.Players.LocalPlayer)
